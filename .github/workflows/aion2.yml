@@ -1,5 +1,4 @@
 
-
 name: AION 2 Patch Notes
 
 on:
@@ -25,6 +24,27 @@ jobs:
 
       - name: Abhängigkeiten installieren
         run: pip install -r requirements.txt
+
+      - name: Discord Webhook testen
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          python - <<'PY'
+          import os
+          import requests
+
+          url = os.environ["DISCORD_WEBHOOK_URL"]
+          response = requests.post(
+              url,
+              json={
+                  "username": "AION 2 Patch Notes",
+                  "content": "✅ **AION 2 Patchnotes-Bot ist erfolgreich eingerichtet!**\n\n🇩🇪 Deutsche Patch Notes und Hotfixes werden künftig automatisch gepostet."
+              },
+              timeout=20
+          )
+          response.raise_for_status()
+          print("Discord-Testnachricht erfolgreich gesendet.")
+          PY
 
       - name: Patch Notes prüfen
         env:
